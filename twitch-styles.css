@@ -324,3 +324,50 @@
 .ytot-result-use:hover {
     background: #00a843;
 }
+
+/* History Section */
+.ytot-history-section {
+    display: none;
+    padding: 0 14px;
+    border-bottom: 1px solid #2f2f35;
+}
+
+.ytot-history-header {
+    font-size: 11px;
+    color: #adadb8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 8px 0;
+}
+
+.ytot-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.ytot-history-item {
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.ytot-history-item:hover {
+    background: #2f2f35;
+}
+
+.ytot-history-title {
+    color: #efeff1;
+    font-size: 12px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ytot-history-channel {
+    color: #adadb8;
+    font-size: 11px;
+}

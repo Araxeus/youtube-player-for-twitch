@@ -47,10 +47,11 @@
      * @param {any} value 
      */
     function saveState(key, value) {
+        if (!chrome.runtime?.id) return;
         try {
             chrome.storage?.local?.set({ [key]: value });
         } catch (e) {
-            console.warn('[YTOT] Storage save failed:', e);
+            // Silent fail
         }
     }
 
@@ -61,10 +62,13 @@
      */
     function loadState(key) {
         return new Promise((resolve) => {
+            if (!chrome.runtime?.id) {
+                resolve(null);
+                return;
+            }
             try {
                 chrome.storage?.local?.get([key], (result) => resolve(result?.[key]));
             } catch (e) {
-                console.warn('[YTOT] Storage load failed:', e);
                 resolve(null);
             }
         });
@@ -109,6 +113,9 @@
                     <button class="ytot-autofind-btn" id="ytot-autofind">🔍 Find YouTube Stream</button>
                     <div class="ytot-search-result" id="ytot-search-result"></div>
                 </div>
+
+                <!-- History Section -->
+                <div id="ytot-history-section" class="ytot-history-section"></div>
                 
                 <div class="ytot-divider">or paste URL</div>
                 
@@ -174,6 +181,65 @@
 
     function closeDropdown() {
         document.getElementById('ytot-dropdown')?.classList.remove('visible');
+    }
+
+    async function addToHistory(videoId, metadata) {
+        if (!videoId) return;
+
+        const history = (await loadState('ytot_history')) || [];
+        const newItem = {
+            videoId,
+            title: metadata?.title || videoId,
+            channel: metadata?.channel || 'Unknown Channel',
+            timestamp: Date.now()
+        };
+
+        // Remove duplicates (by videoId)
+        const filtered = history.filter(h => h.videoId !== videoId);
+
+        // Add to top
+        filtered.unshift(newItem);
+
+        // Keep max 5
+        const trimmed = filtered.slice(0, 5);
+
+        saveState('ytot_history', trimmed);
+        renderHistory();
+    }
+
+    async function renderHistory() {
+        const container = document.getElementById('ytot-history-section');
+        if (!container) return;
+
+        const history = (await loadState('ytot_history')) || [];
+
+        if (history.length === 0) {
+            container.innerHTML = '';
+            container.style.display = 'none';
+            return;
+        }
+
+        container.style.display = 'block';
+        container.innerHTML = `
+            <div class="ytot-history-header">Recent Streams</div>
+            <div class="ytot-history-list">
+                ${history.map(item => `
+                    <div class="ytot-history-item" data-video-id="${item.videoId}">
+                        <div class="ytot-history-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
+                        <div class="ytot-history-channel">${escapeHtml(item.channel)}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        // Add click listeners
+        container.querySelectorAll('.ytot-history-item').forEach(el => {
+            el.onclick = () => {
+                const videoId = el.getAttribute('data-video-id');
+                const item = history.find(h => h.videoId === videoId);
+                injectYouTube(videoId, item);
+            };
+        });
     }
 
     // =====================
@@ -282,7 +348,7 @@
                     <button class="ytot-result-use" data-video-id="${result.videoId}">▶ Use This Stream</button>
                 </div>
             `;
-            resultDiv.querySelector('.ytot-result-use').onclick = () => injectYouTube(result.videoId);
+            resultDiv.querySelector('.ytot-result-use').onclick = () => injectYouTube(result.videoId, result);
         } else {
             resultDiv.innerHTML = '<div class="ytot-no-result">No live stream found for this channel</div>';
         }
@@ -323,9 +389,29 @@
     /**
      * Injects YouTube iframe over the Twitch player
      * @param {string} videoId 
+     * @param {object} metadata Optional metadata { title, channel }
      */
-    function injectYouTube(videoId) {
+    function injectYouTube(videoId, metadata = null) {
         if (!videoId) return;
+
+        // Update History
+        if (metadata) {
+            addToHistory(videoId, metadata);
+        } else {
+            // Fetch metadata asynchronously
+            if (chrome.runtime?.id) {
+                chrome.runtime.sendMessage({
+                    type: 'GET_VIDEO_DETAILS',
+                    videoId
+                }, (response) => {
+                    if (response && !response.error) {
+                        addToHistory(videoId, response);
+                    } else {
+                        addToHistory(videoId, { title: videoId, channel: 'Manual Entry' });
+                    }
+                });
+            }
+        }
 
         // Try multiple selectors to support Twitch layout changes
         const container = document.querySelector('[data-a-target="video-player-layout"]') ||
@@ -529,6 +615,8 @@
             state.autoSyncEnabled = true;
             document.getElementById('ytot-autosync').checked = true;
         }
+
+        renderHistory();
 
         // Restore Active Stream or Last Used
         const channel = getTwitchChannel();

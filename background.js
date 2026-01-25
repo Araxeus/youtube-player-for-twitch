@@ -11,7 +11,55 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .catch(err => sendResponse({ error: err.message }));
         return true; // Keep channel open for async response
     }
+
+    if (request.type === 'GET_VIDEO_DETAILS') {
+        handleVideoDetails(request.videoId)
+            .then(sendResponse)
+            .catch(err => sendResponse({ error: err.message }));
+        return true;
+    }
 });
+
+async function handleVideoDetails(videoId) {
+    try {
+        const url = `https://www.youtube.com/watch?v=${videoId}`;
+        const response = await fetch(url);
+        const html = await response.text();
+
+        // Try to find ytInitialPlayerResponse
+        let match = html.match(/var ytInitialPlayerResponse\s*=\s*({.*?});/);
+        if (!match) {
+            match = html.match(/ytInitialPlayerResponse\s*=\s*({.*?});/);
+        }
+
+        if (match) {
+            const data = JSON.parse(match[1]);
+            const details = data?.videoDetails;
+            if (details) {
+                return {
+                    title: details.title,
+                    channel: details.author,
+                    videoId: videoId
+                };
+            }
+        }
+
+        // Fallback to title tag if JSON parsing fails
+        const titleMatch = html.match(/<title>(.*?) - YouTube<\/title>/);
+        if (titleMatch) {
+            return {
+                title: titleMatch[1],
+                channel: 'YouTube Stream', // Best guess fallback
+                videoId: videoId
+            };
+        }
+
+        return { error: 'Could not parse video details' };
+    } catch (err) {
+        console.error('Details error:', err);
+        return { error: err.message };
+    }
+}
 
 async function handleSearch(query) {
     try {
