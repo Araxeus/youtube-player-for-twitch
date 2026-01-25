@@ -3,14 +3,17 @@
  * Merges Twitch chat with YouTube livestream chat
  */
 
-(function() {
+(function () {
   'use strict';
+
+  // Immediate log to confirm script execution
+  console.log('[TCFY] 🚀 Content script loaded on:', window.location.href);
 
   // Configuration
   const CONFIG = {
     TWITCH_CHAT_URL: 'https://www.twitch.tv/embed/{channel}/chat?parent=www.youtube.com&darkpopout',
     CHECK_INTERVAL: 2000,
-    MAX_RETRIES: 10
+    MAX_RETRIES: 15
   };
 
   // State
@@ -30,9 +33,20 @@
     // Check for live chat iframe or live badge
     const chatFrame = document.querySelector('iframe#chatframe');
     const liveBadge = document.querySelector('.ytp-live-badge');
-    const liveIndicator = document.querySelector('[aria-label*="LIVE"]');
-    
-    return !!(chatFrame || (liveBadge && liveBadge.getAttribute('disabled') === null) || liveIndicator);
+    const liveChat = document.querySelector('ytd-live-chat-frame');
+    const chatContainer = document.querySelector('#chat');
+
+    const isLive = !!(chatFrame || liveChat || chatContainer || (liveBadge && liveBadge.getAttribute('disabled') === null));
+
+    console.log('[TCFY] Livestream check:', {
+      chatFrame: !!chatFrame,
+      liveBadge: !!liveBadge,
+      liveChat: !!liveChat,
+      chatContainer: !!chatContainer,
+      isLive
+    });
+
+    return isLive;
   }
 
   /**
@@ -169,7 +183,7 @@
     // Manual Twitch channel input
     const connectBtn = container.querySelector('#tcfy-connect-btn');
     const input = container.querySelector('#tcfy-twitch-input');
-    
+
     connectBtn.addEventListener('click', () => {
       const channel = input.value.trim();
       if (channel) {
@@ -218,7 +232,7 @@
    */
   function connectToTwitch(channel, container) {
     state.twitchChannel = channel;
-    
+
     const iframe = container.querySelector('#tcfy-twitch-iframe');
     const overlay = container.querySelector('#tcfy-manual-overlay');
     const statusDot = container.querySelector('#tcfy-twitch-status');
@@ -227,7 +241,7 @@
     // Hide overlay and load Twitch chat
     overlay.classList.add('hidden');
     iframe.src = CONFIG.TWITCH_CHAT_URL.replace('{channel}', channel.toLowerCase());
-    
+
     // Update status
     statusDot.classList.add('connected');
     channelDisplay.textContent = `Twitch: ${channel}`;
@@ -242,11 +256,11 @@
   function showManualInput(container, message) {
     const overlay = container.querySelector('#tcfy-manual-overlay');
     const messageEl = container.querySelector('#tcfy-overlay-message');
-    
+
     if (message) {
       messageEl.textContent = message;
     }
-    
+
     overlay.classList.remove('hidden');
   }
 
@@ -307,18 +321,18 @@
     if (state.isInitialized) return;
 
     // Find the YouTube chat container
-    const chatContainer = document.querySelector('#chat') || 
-                          document.querySelector('ytd-live-chat-frame') ||
-                          document.querySelector('#chat-container');
-    
+    const chatContainer = document.querySelector('#chat') ||
+      document.querySelector('ytd-live-chat-frame') ||
+      document.querySelector('#chat-container');
+
     if (!chatContainer) {
       console.log('[TCFY] Chat container not found, retrying...');
       return false;
     }
 
     // Store reference to original chat
-    state.originalChatElement = chatContainer.querySelector('iframe#chatframe') || 
-                                 chatContainer.querySelector('ytd-live-chat-frame');
+    state.originalChatElement = chatContainer.querySelector('iframe#chatframe') ||
+      chatContainer.querySelector('ytd-live-chat-frame');
     state.originalChatParent = chatContainer;
 
     // Get YouTube channel name
@@ -327,7 +341,7 @@
 
     // Create and inject merged chat UI
     const mergedChat = createMergedChatUI();
-    
+
     // Move original YouTube chat iframe into our container
     const ytChatContainer = mergedChat.querySelector('#tcfy-youtube-chat-container');
     if (state.originalChatElement) {
@@ -359,7 +373,7 @@
    */
   async function attemptTwitchConnection(container) {
     const youtubeChannel = state.youtubeChannel;
-    
+
     // First, check for saved mapping
     const savedChannel = await loadChannelMapping(youtubeChannel);
     if (savedChannel) {
@@ -372,15 +386,15 @@
     const normalizedName = normalizeTwitchName(youtubeChannel);
     if (normalizedName) {
       console.log('[TCFY] Trying Twitch channel:', normalizedName);
-      
+
       // We can't easily check if a Twitch channel is live without API
       // So we'll just try to load it and show manual input as fallback
       const input = container.querySelector('#tcfy-twitch-input');
       input.value = normalizedName;
-      
+
       // Show overlay with suggestion
       showManualInput(
-        container, 
+        container,
         `Suggested Twitch channel: "${normalizedName}". Click Connect to try, or enter a different channel name.`
       );
     } else {
@@ -398,7 +412,7 @@
     console.log('[TCFY] Twitch Chat for YouTube loaded');
 
     let retries = 0;
-    
+
     const checkAndInject = () => {
       if (!isLiveStream()) {
         console.log('[TCFY] Not a livestream, checking again...');
