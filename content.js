@@ -133,7 +133,7 @@
         // Create host element
         const host = document.createElement('div');
         host.id = 'tcfy-shadow-host';
-        host.style.cssText = 'width:100%;height:100%;';
+        host.style.cssText = 'position:absolute;inset:0;z-index:100;';
 
         // Create shadow root
         const shadow = host.attachShadow({ mode: 'closed' });
