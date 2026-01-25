@@ -201,32 +201,43 @@
         if (!iframe) return;
 
         state.isSyncing = true;
-        updateStatus('⚡ Syncing...', 'syncing');
+        updateStatus('⚡ Jumping to live...', 'syncing');
 
-        // Send message to YouTube iframe to speed up
         try {
+            // Step 1: Seek to live (seek to a very large number to jump to live edge)
             iframe.contentWindow.postMessage(JSON.stringify({
                 event: 'command',
-                func: 'setPlaybackRate',
-                args: [CONFIG.SYNC_SPEED]
+                func: 'seekTo',
+                args: [999999, true]  // Seek to far future = live edge
             }), '*');
 
-            // After 5 seconds, check and reset
+            // Step 2: After a short delay, speed up to catch up any remaining buffer
             setTimeout(() => {
+                updateStatus('⚡ Catching up at 2x...', 'syncing');
+
                 iframe.contentWindow.postMessage(JSON.stringify({
                     event: 'command',
                     func: 'setPlaybackRate',
-                    args: [CONFIG.NORMAL_SPEED]
+                    args: [CONFIG.SYNC_SPEED]
                 }), '*');
 
-                state.isSyncing = false;
-                updateStatus('✓ Synced', 'success');
-
-                // Clear status after 3 seconds
+                // Step 3: After 5 seconds at 2x, return to normal speed
                 setTimeout(() => {
-                    if (!state.isSyncing) updateStatus('');
-                }, 3000);
-            }, 5000);
+                    iframe.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'setPlaybackRate',
+                        args: [CONFIG.NORMAL_SPEED]
+                    }), '*');
+
+                    state.isSyncing = false;
+                    updateStatus('✓ Synced to live', 'success');
+
+                    // Clear status after 3 seconds
+                    setTimeout(() => {
+                        if (!state.isSyncing) updateStatus('');
+                    }, 3000);
+                }, 5000);
+            }, 500);
         } catch (e) {
             state.isSyncing = false;
             updateStatus('Sync failed', 'error');
