@@ -1,29 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Twitch Chat for YouTube",
-  "version": "1.0.0",
-  "description": "Merge Twitch chat with YouTube livestream chat for a unified viewing experience",
+  "name": "YouTube on Twitch",
+  "version": "1.1.0",
+  "description": "Watch YouTube livestreams with Twitch chat - the best of both worlds",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "host_permissions": [
-    "https://www.youtube.com/*",
     "https://www.twitch.tv/*"
   ],
   "content_scripts": [
-    {
-      "matches": [
-        "https://www.youtube.com/watch*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "css": [
-        "styles.css"
-      ],
-      "run_at": "document_idle"
-    },
     {
       "matches": [
         "https://www.twitch.tv/*"

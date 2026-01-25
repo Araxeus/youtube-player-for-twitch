@@ -1,55 +1,90 @@
-# Twitch Chat for YouTube
+# YouTube on Twitch
 
-A Chrome Extension that merges YouTube and Twitch livestream chats into a unified viewing experience.
+**Watch YouTube livestreams with Twitch chat** – the best of both worlds.
 
-## Features
+Ever wanted to watch a YouTube stream but prefer Twitch's chat experience? This Chrome extension lets you replace the Twitch player with a YouTube livestream while keeping Twitch's chat visible.
 
-- 🔄 **Merged Chat View** - See YouTube and Twitch chats side-by-side
-- 🎯 **Auto-Detection** - Automatically attempts to match YouTube channels to Twitch
-- ✏️ **Manual Override** - Enter any Twitch channel manually if auto-detection fails
-- 🌙 **Dark Mode** - Twitch-inspired dark theme
-- 📺 **Toggle Original** - Switch back to YouTube's native chat anytime
+## ✨ Features
 
-## Installation
+- **YouTube in Twitch** – Replace the Twitch player with any YouTube livestream
+- **Keep Twitch Chat** – Watch YouTube with Twitch's superior chat experience
+- **Auto-Sync** – Automatically speed up playback every 10 minutes to catch up with the live stream
+- **Per-Channel Memory** – Remembers your last YouTube URL for each Twitch channel
+- **Native Integration** – Button appears in Twitch's navigation bar
+- **One-Click Restore** – Instantly switch back to Twitch
+
+## 📦 Installation
+
+### From Source (Developer Mode)
 
 1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions`
-3. Enable "Developer mode" (toggle in top-right)
-4. Click "Load unpacked" and select this project folder
-5. Navigate to any YouTube livestream
+2. Open Chrome and go to `chrome://extensions`
+3. Enable **Developer mode** (toggle in top-right)
+4. Click **Load unpacked**
+5. Select the extension folder
 
-## Usage
+### From Chrome Web Store
 
-1. Open a YouTube livestream
-2. The extension will automatically replace YouTube's chat with the merged view
-3. If the Twitch channel isn't auto-detected, enter it manually and click "Connect"
-4. Use the tabs to switch between Both, YouTube-only, or Twitch-only views
-5. Click "Show Original Chat" to toggle back to YouTube's native chat
+*Coming soon*
 
-## Project Structure
+## 🚀 Usage
+
+1. Go to any Twitch channel page
+2. Click the **▶ YouTube** button in the top navigation bar
+3. Paste a YouTube livestream URL
+4. Click **Go**
+
+### Auto-Sync
+
+YouTube streams are sometimes a few seconds behind. Enable **Auto-sync** to automatically speed up playback (2x) every 10 minutes until the stream catches up.
+
+- Check the "Auto-sync" box in the dropdown
+- Click "⚡ Sync Now" to manually sync anytime
+
+### Keyboard Shortcuts
+
+- `Escape` – Close the dropdown menu
+
+## 🔧 How It Works
+
+1. The extension injects a button into Twitch's navigation bar
+2. When you enter a YouTube URL, it overlays a YouTube embed iframe on top of the Twitch player
+3. Twitch's video is paused and muted (but chat continues)
+4. The YouTube iframe uses YouTube's embed API with autoplay enabled
+
+## 📁 Files
 
 ```
-├── manifest.json    # Extension manifest (Manifest V3)
-├── content.js       # Main content script
-├── styles.css       # UI styles
-├── icons/           # Extension icons
-└── README.md        # This file
+├── manifest.json        # Chrome extension manifest
+├── twitch-content.js    # Main content script
+├── twitch-styles.css    # Styles for the UI
+├── icons/               # Extension icons
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+└── README.md
 ```
 
-## How It Works
+## 🛠 Development
 
-1. Content script injects on YouTube watch pages
-2. Detects if the page is a livestream (checks for live chat)
-3. Extracts channel name from page DOM
-4. Creates merged chat UI with YouTube chat iframe + Twitch embed
-5. Twitch chat is embedded using their official iframe embed API
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/youtube-on-twitch.git
 
-## Permissions
+# Load in Chrome
+# 1. Go to chrome://extensions
+# 2. Enable Developer mode
+# 3. Click "Load unpacked" and select the folder
+```
 
-- `activeTab` - Access to the current tab when extension is active
-- `storage` - Save Twitch channel preferences locally
-- `https://www.youtube.com/*` - Run on YouTube pages
+## 📝 License
 
-## License
+MIT License - feel free to use, modify, and distribute.
 
-MIT
+## 🤝 Contributing
+
+Pull requests welcome! Please open an issue first to discuss major changes.
+
+---
+
+Made with 💜 for the Twitch community

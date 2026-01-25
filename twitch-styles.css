@@ -1,18 +1,19 @@
-/* Twitch Page Styles - YouTube Nav Button */
+/* YouTube on Twitch - Styles */
 
-/* Nav button wrapper */
-#tcfy-nav-wrapper {
+/* Nav Button Wrapper */
+#ytot-nav-wrapper {
     position: relative;
     display: flex;
     align-items: center;
     margin-left: 10px;
 }
 
-/* Main nav button - matches Twitch's nav link style */
-.tcfy-nav-btn {
+/* Main Nav Button */
+.ytot-nav-btn {
     display: flex;
     align-items: center;
-    padding: 8px 10px;
+    gap: 5px;
+    padding: 8px 12px;
     background: transparent;
     border: none;
     border-radius: 6px;
@@ -20,111 +21,205 @@
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.1s, color 0.1s;
+    transition: all 0.15s ease;
 }
 
-.tcfy-nav-btn:hover {
+.ytot-nav-btn:hover {
     background: rgba(83, 83, 95, 0.48);
     color: #fff;
 }
 
-.tcfy-nav-btn.active {
+.ytot-nav-btn.active {
     color: #bf94ff;
 }
 
-/* Dropdown panel */
-.tcfy-dropdown {
+.ytot-icon {
+    font-size: 12px;
+}
+
+/* Dropdown Panel */
+.ytot-dropdown {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
-    margin-top: 5px;
     width: 300px;
     background: #18181b;
-    border-radius: 6px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     z-index: 9999;
     overflow: hidden;
 }
 
-.tcfy-dropdown.visible {
+.ytot-dropdown.visible {
     display: block;
 }
 
-.tcfy-dropdown-header {
+/* Dropdown Header */
+.ytot-dropdown-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
+    padding: 12px 14px;
     background: #0e0e10;
     color: #efeff1;
     font-size: 13px;
     font-weight: 600;
 }
 
-.tcfy-dropdown-close {
+.ytot-close {
     background: none;
     border: none;
     color: #adadb8;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     padding: 0;
     line-height: 1;
 }
 
-.tcfy-dropdown-close:hover {
+.ytot-close:hover {
     color: #fff;
 }
 
-.tcfy-dropdown-body {
+/* Dropdown Body */
+.ytot-dropdown-body {
     display: flex;
     gap: 8px;
-    padding: 12px;
+    padding: 12px 14px;
 }
 
-#tcfy-yt-url {
+#ytot-url {
     flex: 1;
-    padding: 8px 10px;
+    padding: 10px 12px;
     background: #0e0e10;
     border: 1px solid #3a3a3d;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #efeff1;
     font-size: 13px;
     outline: none;
 }
 
-#tcfy-yt-url:focus {
+#ytot-url:focus {
     border-color: #9147ff;
 }
 
-#tcfy-yt-go {
-    padding: 8px 14px;
+#ytot-url::placeholder {
+    color: #636369;
+}
+
+.ytot-go {
+    padding: 10px 16px;
     background: #9147ff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     color: white;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.15s;
 }
 
-#tcfy-yt-go:hover {
+.ytot-go:hover {
     background: #772ce8;
 }
 
-.tcfy-dropdown-restore {
-    display: none;
-    width: 100%;
-    padding: 10px;
-    background: #1f1f23;
-    border: none;
+/* Options Section */
+.ytot-options {
+    padding: 8px 14px;
     border-top: 1px solid #2f2f35;
+}
+
+.ytot-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: #adadb8;
     font-size: 12px;
     cursor: pointer;
 }
 
-.tcfy-dropdown-restore:hover {
-    background: #2f2f35;
+.ytot-option:hover {
     color: #efeff1;
+}
+
+.ytot-option input[type="checkbox"] {
+    accent-color: #9147ff;
+}
+
+/* Actions Section */
+.ytot-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid #2f2f35;
+}
+
+.ytot-sync-now,
+.ytot-restore {
+    display: none;
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ytot-sync-now {
+    background: #1f69ff;
+    color: white;
+}
+
+.ytot-sync-now:hover {
+    background: #0050e6;
+}
+
+.ytot-restore {
+    background: #3a3a3d;
+    color: #adadb8;
+}
+
+.ytot-restore:hover {
+    background: #4a4a4d;
+    color: #efeff1;
+}
+
+/* Status */
+.ytot-status {
+    padding: 0 14px 12px;
+    font-size: 11px;
+    color: #adadb8;
+    min-height: 14px;
+}
+
+.ytot-status:empty {
+    display: none;
+}
+
+.ytot-status-success {
+    color: #00c853;
+}
+
+.ytot-status-error {
+    color: #ff5252;
+}
+
+.ytot-status-syncing {
+    color: #1f69ff;
+}
+
+/* YouTube Player Wrapper */
+#ytot-youtube-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    background: #000;
+}
+
+#ytot-youtube-player {
+    width: 100%;
+    height: 100%;
+    border: none;
 }
