@@ -52,6 +52,23 @@
         return null;
     }
 
+    function pauseTwitchPlayer() {
+        // Try to pause/mute Twitch's video element
+        const video = document.querySelector('video');
+        if (video) {
+            video.pause();
+            video.muted = true;
+            state.twitchVideo = video;
+        }
+    }
+
+    function resumeTwitchPlayer() {
+        if (state.twitchVideo) {
+            state.twitchVideo.muted = false;
+            state.twitchVideo.play().catch(() => { });
+        }
+    }
+
     function replaceWithYouTube(videoId) {
         if (!videoId) return;
 
@@ -65,6 +82,9 @@
             console.log('[TCFY] Player container not found');
             return;
         }
+
+        // Pause Twitch audio
+        pauseTwitchPlayer();
 
         // Create wrapper div
         const wrapper = document.createElement('div');
@@ -101,6 +121,9 @@
         if (wrapper) {
             wrapper.remove();
         }
+
+        // Resume Twitch audio
+        resumeTwitchPlayer();
 
         // Update UI
         document.getElementById('tcfy-yt-toggle').textContent = '📺 Watch YouTube';
