@@ -1,0 +1,122 @@
+/* Twitch Page Styles - YouTube Player Overlay */
+
+#tcfy-yt-overlay {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.tcfy-yt-controls {
+    display: flex;
+}
+
+.tcfy-yt-toggle {
+    padding: 8px 14px;
+    background: #9147ff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tcfy-yt-toggle:hover {
+    background: #772ce8;
+}
+
+.tcfy-yt-input-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    width: 320px;
+    background: #18181b;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.tcfy-yt-input-panel.hidden {
+    display: none;
+}
+
+.tcfy-yt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: #0e0e10;
+    color: #efeff1;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tcfy-yt-close {
+    background: none;
+    border: none;
+    color: #adadb8;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.tcfy-yt-close:hover {
+    color: #efeff1;
+}
+
+.tcfy-yt-body {
+    display: flex;
+    gap: 8px;
+    padding: 14px;
+}
+
+#tcfy-yt-url {
+    flex: 1;
+    padding: 10px 12px;
+    background: #0e0e10;
+    border: 1px solid #3a3a3d;
+    border-radius: 4px;
+    color: #efeff1;
+    font-size: 13px;
+    outline: none;
+}
+
+#tcfy-yt-url:focus {
+    border-color: #9147ff;
+}
+
+#tcfy-yt-go {
+    padding: 10px 16px;
+    background: #ff0000;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#tcfy-yt-go:hover {
+    background: #cc0000;
+}
+
+.tcfy-yt-restore {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    background: #3a3a3d;
+    border: none;
+    color: #adadb8;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tcfy-yt-restore:hover {
+    background: #4a4a4d;
+    color: #efeff1;
+}

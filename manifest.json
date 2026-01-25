@@ -8,13 +8,32 @@
     "storage"
   ],
   "host_permissions": [
-    "https://www.youtube.com/*"
+    "https://www.youtube.com/*",
+    "https://www.twitch.tv/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/watch*"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "matches": [
+        "https://www.youtube.com/watch*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.twitch.tv/*"
+      ],
+      "js": [
+        "twitch-content.js"
+      ],
+      "css": [
+        "twitch-styles.css"
+      ],
       "run_at": "document_idle"
     }
   ],
