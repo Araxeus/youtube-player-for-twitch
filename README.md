@@ -1,90 +1,73 @@
 # YouTube on Twitch
 
-**Watch YouTube livestreams with Twitch chat** – the best of both worlds.
+**Watch YouTube livestreams with Twitch chat.**
 
-Ever wanted to watch a YouTube stream but prefer Twitch's chat experience? This Chrome extension lets you replace the Twitch player with a YouTube livestream while keeping Twitch's chat visible.
+A Chrome extension that lets you overlay any YouTube livestream on top of a Twitch channel player, keeping the Twitch chat and interface intact. Perfect for when your favorite streamer switches platforms or when you want the superior YouTube video quality with Twitch's superior chat experience.
+
+![Icon](icons/icon128.png)
 
 ## ✨ Features
 
-- **YouTube in Twitch** – Replace the Twitch player with any YouTube livestream
-- **Keep Twitch Chat** – Watch YouTube with Twitch's superior chat experience
-- **Auto-Sync** – Automatically speed up playback every 10 minutes to catch up with the live stream
-- **Per-Channel Memory** – Remembers your last YouTube URL for each Twitch channel
-- **Native Integration** – Button appears in Twitch's navigation bar
-- **One-Click Restore** – Instantly switch back to Twitch
+### 📺 Watch YouTube on Twitch
+- Replace the Twitch video player with a YouTube livestream
+- Keeps Twitch chat, badges, and channel points visible and interactive
+- Automutes the underlying Twitch player
+- Supports 4K/60fps YouTube playback
 
-## 📦 Installation
+### 🔍 Auto-Find Stream
+- **Smart Search**: Automatically finds the YouTube stream for the current Twitch channel
+- **Fuzzy Matching**: Intelligent matching works even if channel names differ slightly (e.g. `burntpeanut` vs `TheBurntPeanut`)
+- **Live Filter**: Only suggests actual active livestreams
 
-### From Source (Developer Mode)
+### ⚡ Auto-Sync
+- **Jump to Live**: One-click button to seek to the absolute live edge
+- **Smart Catch-up**: Speeds up playback (2x) briefly to close the latency gap
+- **Auto-Sync**: Optional setting to automatically re-sync every 10 minutes
 
-1. Clone or download this repository
-2. Open Chrome and go to `chrome://extensions`
-3. Enable **Developer mode** (toggle in top-right)
-4. Click **Load unpacked**
-5. Select the extension folder
-
-### From Chrome Web Store
-
-*Coming soon*
+### 💾 Smart Persistence
+- **Auto-Restore**: Remembers your active YouTube stream if you reload the page
+- **Navigation Aware**: Handles switching between channels intelligently—keeps the stream when reloading, but resets when you click a different Twitch channel
+- **Per-Channel Memory**: Remembers the last YouTube URL you watched for every Twitch channel
 
 ## 🚀 Usage
 
-1. Go to any Twitch channel page
-2. Click the **▶ YouTube** button in the top navigation bar
-3. Paste a YouTube livestream URL
-4. Click **Go**
+1. **Install** the extension (Developer Mode for now)
+2. Go to any **Twitch Channel**
+3. Click the **▶ YouTube** button in the top navigation bar
 
-### Auto-Sync
+### Finding a Stream
+- **Option A (Automatic)**: Click "🔍 Find YouTube Stream" to search for the streamer's YouTube live.
+- **Option B (Manual)**: Paste any YouTube URL (video, live, or embed link) and click "Go".
 
-YouTube streams are sometimes a few seconds behind. Enable **Auto-sync** to automatically speed up playback (2x) every 10 minutes until the stream catches up.
+### Syncing
+- Click **⚡ Sync Now** to jump to the live edge.
+- Enable **Auto-sync** to keep it synced automatically in the background.
 
-- Check the "Auto-sync" box in the dropdown
-- Click "⚡ Sync Now" to manually sync anytime
+### Restoring Twitch
+- Click **Restore Twitch** to remove the YouTube player and unmute the original stream.
 
-### Keyboard Shortcuts
+## 📦 Installation (Developer Mode)
 
-- `Escape` – Close the dropdown menu
+1. Clone or download this repository
+    ```bash
+    git clone https://github.com/yourusername/youtube-on-twitch.git
+    ```
+2. Open Chrome and navigate to `chrome://extensions`
+3. Toggle **Developer mode** in the top right
+4. Click **Load unpacked**
+5. Select the extension folder
 
-## 🔧 How It Works
+## 🛠 Tech Stack
 
-1. The extension injects a button into Twitch's navigation bar
-2. When you enter a YouTube URL, it overlays a YouTube embed iframe on top of the Twitch player
-3. Twitch's video is paused and muted (but chat continues)
-4. The YouTube iframe uses YouTube's embed API with autoplay enabled
+- **Manifest V3**: Modern, secure extension architecture
+- **Service Worker**: Handles cross-origin search requests securely
+- **Content Script**: Injects UI and manages the players
+- **Shadow DOM / Iframe**: Isolates the YouTube player
 
-## 📁 Files
+## 📄 License
 
-```
-├── manifest.json        # Chrome extension manifest
-├── twitch-content.js    # Main content script
-├── twitch-styles.css    # Styles for the UI
-├── icons/               # Extension icons
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md
-```
-
-## 🛠 Development
-
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/youtube-on-twitch.git
-
-# Load in Chrome
-# 1. Go to chrome://extensions
-# 2. Enable Developer mode
-# 3. Click "Load unpacked" and select the folder
-```
-
-## 📝 License
-
-MIT License - feel free to use, modify, and distribute.
-
-## 🤝 Contributing
-
-Pull requests welcome! Please open an issue first to discuss major changes.
+MIT License. Free to use and modify.
 
 ---
 
-Made with 💜 for the Twitch community
+<p align="center">Made for the streaming community 💜</p>
