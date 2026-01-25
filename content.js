@@ -225,15 +225,22 @@
 
     check();
 
-    // Handle YouTube SPA navigation
+    // Handle YouTube SPA navigation - use events instead of MutationObserver
     let lastUrl = location.href;
-    new MutationObserver(() => {
+
+    const onNavigate = () => {
       if (location.href !== lastUrl) {
         lastUrl = location.href;
         state.isInitialized = false;
+        retries = 0;
         setTimeout(check, 1000);
       }
-    }).observe(document.body, { subtree: true, childList: true });
+    };
+
+    // YouTube fires this on SPA navigation
+    window.addEventListener('yt-navigate-finish', onNavigate);
+    // Fallback for popstate
+    window.addEventListener('popstate', onNavigate);
   }
 
   if (document.readyState === 'loading') {
@@ -242,3 +249,4 @@
     init();
   }
 })();
+
