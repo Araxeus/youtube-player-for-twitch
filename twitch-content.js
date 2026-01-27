@@ -602,12 +602,6 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeDropdown();
-
-            // Alt+Y to toggle menu
-            if (e.altKey && (e.code === 'KeyY' || e.key === 'y' || e.key === 'Y')) {
-                const dropdown = document.getElementById('ytot-dropdown');
-                if (dropdown) dropdown.classList.toggle('visible');
-            }
         });
     }
 
