@@ -150,16 +150,26 @@
         return wrapper;
     }
 
+    const uiCache = {};
+
+    function refreshDOMCache() {
+        const toggle = document.getElementById('ytot-toggle');
+        uiCache.toggle = toggle;
+        uiCache.icon = toggle?.querySelector('.ytot-icon');
+        uiCache.label = toggle?.querySelector('.ytot-label');
+        uiCache.restore = document.getElementById('ytot-restore');
+        uiCache.syncNow = document.getElementById('ytot-sync-now');
+    }
+
     /**
      * Updates the toggle button appearance based on active state
      * @param {boolean} isActive 
      */
     function updateToggleButton(isActive) {
-        const toggle = document.getElementById('ytot-toggle');
-        const icon = toggle?.querySelector('.ytot-icon');
-        const label = toggle?.querySelector('.ytot-label');
-        const restore = document.getElementById('ytot-restore');
-        const syncNow = document.getElementById('ytot-sync-now');
+        // Fallback if cache is empty (safety net)
+        if (!uiCache.toggle) refreshDOMCache();
+
+        const { toggle, icon, label, restore, syncNow } = uiCache;
 
         if (isActive) {
             toggle?.classList.add('active');
@@ -640,6 +650,7 @@
 
         leftNav.appendChild(createNavButton());
         setupEventListeners();
+        refreshDOMCache();
 
         // Restore Settings
         const savedAutoSync = await loadState('ytot_autosync');
