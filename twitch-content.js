@@ -112,7 +112,7 @@
         wrapper.id = 'ytot-nav-wrapper';
 
         wrapper.innerHTML = `
-            <button class="ytot-nav-btn" id="ytot-toggle" aria-label="Toggle YouTube Player" title="Toggle YouTube (Alt+Y)">
+            <button class="ytot-nav-btn" id="ytot-toggle" aria-label="Toggle YouTube Player" title="Toggle YouTube">
                 <span class="ytot-icon">▶</span>
                 <span class="ytot-label">YouTube</span>
             </button>
@@ -154,7 +154,7 @@
                 
                 <!-- Actions -->
                 <div class="ytot-actions">
-                    <button class="ytot-sync-now" id="ytot-sync-now" title="Sync (Alt+S)">⚡ Sync Now</button>
+                    <button class="ytot-sync-now" id="ytot-sync-now" title="Sync">⚡ Sync Now</button>
                     <button class="ytot-restore" id="ytot-restore">Restore Twitch</button>
                 </div>
                 
@@ -661,46 +661,6 @@
     // Lifecycle & Events
     // =====================
 
-    async function handleGlobalKeyDown(e) {
-        // Ignore if user is typing
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) return;
-
-        // Alt+Y: Toggle
-        if (e.altKey && e.code === 'KeyY') {
-            e.preventDefault();
-            if (state.youtubeVideoId) {
-                removeYouTube(true); // Keep state active so we can restore
-                updateStatus('Restored Twitch', 'success');
-                setTimeout(() => updateStatus(''), 2000);
-            } else {
-                // Try to find what to play
-                const channel = getTwitchChannel();
-                if (channel) {
-                    const active = await loadState(`ytot_active_${channel}`);
-                    const saved = await loadState(`ytot_${channel}`);
-                    const videoId = active || saved;
-
-                    if (videoId) {
-                        injectYouTube(videoId);
-                    } else {
-                        // Maybe open dropdown?
-                        const toggle = document.getElementById('ytot-toggle');
-                        if (toggle) toggle.click();
-                        updateStatus('No video to restore', 'error');
-                    }
-                }
-            }
-        }
-
-        // Alt+S: Sync
-        if (e.altKey && e.code === 'KeyS') {
-            e.preventDefault();
-            if (state.youtubeVideoId) {
-                syncNow();
-            }
-        }
-    }
-
     function setupEventListeners() {
         const toggle = document.getElementById('ytot-toggle');
         const dropdown = document.getElementById('ytot-dropdown');
@@ -866,8 +826,6 @@
             if (e.key === 'Escape') closeDropdown();
         });
 
-        // Shortcuts
-        document.addEventListener('keydown', handleGlobalKeyDown);
     }
 
     setupGlobalListeners();
