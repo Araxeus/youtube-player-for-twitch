@@ -40,6 +40,9 @@ A Chrome extension that lets you overlay any YouTube livestream on top of a Twit
 2. Go to any **Twitch Channel**
 3. Click the **▶ YouTube** button in the top navigation bar
 
+### ⌨️ Shortcuts
+- **Alt + Y**: Toggle the YouTube menu (and auto-focus the URL input).
+
 ### Finding a Stream
 - **Option A (Automatic)**: Click "🔍 Find YouTube Stream" to search for the streamer's YouTube live.
 - **Option B (Manual)**: Paste any YouTube URL (video, live, or embed link) and click "Go".

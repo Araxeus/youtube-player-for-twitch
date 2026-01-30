@@ -654,6 +654,8 @@
     // Lifecycle & Events
     // =====================
 
+    let globalListenersSetup = false;
+
     function setupEventListeners() {
         const toggle = document.getElementById('ytot-toggle');
         const dropdown = document.getElementById('ytot-dropdown');
@@ -701,15 +703,33 @@
             }
         };
 
-        // Close on click outside
-        document.addEventListener('click', (e) => {
-            const wrapper = document.getElementById('ytot-nav-wrapper');
-            if (wrapper && !wrapper.contains(e.target)) closeDropdown();
-        });
+        if (!globalListenersSetup) {
+            // Close on click outside
+            document.addEventListener('click', (e) => {
+                const wrapper = document.getElementById('ytot-nav-wrapper');
+                if (wrapper && !wrapper.contains(e.target)) closeDropdown();
+            });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeDropdown();
-        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeDropdown();
+
+                // Shortcut: Alt+Y to toggle menu
+                if (e.altKey && (e.key === 'y' || e.key === 'Y')) {
+                    const dd = document.getElementById('ytot-dropdown');
+                    const inp = document.getElementById('ytot-url');
+                    if (dd) {
+                        if (dd.classList.contains('visible')) {
+                            closeDropdown();
+                        } else {
+                            dd.classList.add('visible');
+                            setTimeout(() => inp?.focus(), 0);
+                        }
+                    }
+                }
+            });
+
+            globalListenersSetup = true;
+        }
     }
 
     let spawnAttempts = 0;
