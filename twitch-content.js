@@ -104,7 +104,7 @@
         const wrapper = document.createElement('div');
         wrapper.id = 'ytot-nav-wrapper';
 
-        wrapper.innerHTML = `
+        wrapper.innerHTML = /* html */`
             <button class="ytot-nav-btn" id="ytot-toggle" aria-label="Toggle YouTube Player">
                 <span class="ytot-icon">\u25B6</span>
                 <span class="ytot-label">YouTube</span>
