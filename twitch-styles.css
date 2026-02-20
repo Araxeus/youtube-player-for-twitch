@@ -241,7 +241,7 @@
 #ytot-player-theater {
     position: absolute;
     bottom: 50px; /* Above YouTube controls */
-    right: 15px;
+    right: 10px;
     z-index: 10000;
     background: rgba(0, 0, 0, 0.6);
     color: white;
@@ -257,13 +257,29 @@
     justify-content: center;
 }
 
-#ytot-youtube-wrapper:hover #ytot-player-theater {
+#ytot-player-theater.ytot-visible {
     opacity: 1;
 }
 
 #ytot-player-theater:hover {
     background: rgba(145, 71, 255, 0.8); /* Twitch Purple */
     transform: scale(1.1);
+}
+
+/* Transparent overlay to capture mouse events over cross-origin iframe */
+#ytot-mouse-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+    cursor: default;
+}
+
+#ytot-mouse-overlay.ytot-active {
+    pointer-events: auto;
 }
 
 /* Auto-Find Section */

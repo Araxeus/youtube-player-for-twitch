@@ -520,6 +520,39 @@
         };
         wrapper.appendChild(theaterToggle);
 
+        // Transparent overlay to capture mouse events (since we can't listen inside cross-origin iframe)
+        const mouseOverlay = document.createElement('div');
+        mouseOverlay.id = 'ytot-mouse-overlay';
+        wrapper.appendChild(mouseOverlay);
+
+        // Auto-hide theater toggle after x seconds of mouse inactivity (like YouTube controls)
+        let hideTimeout = null;
+        const HIDE_DELAY = 3500;
+
+        const showTheaterToggle = () => {
+            theaterToggle.classList.add('ytot-visible');
+            mouseOverlay.classList.remove('ytot-active');
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                theaterToggle.classList.remove('ytot-visible');
+                mouseOverlay.classList.add('ytot-active');
+            }, HIDE_DELAY);
+        };
+
+        const hideTheaterToggle = () => {
+            clearTimeout(hideTimeout);
+            theaterToggle.classList.remove('ytot-visible');
+            mouseOverlay.classList.add('ytot-active');
+        };
+
+        // Overlay captures mouse movement when active, then hides itself to allow iframe interaction
+        mouseOverlay.addEventListener('mousemove', showTheaterToggle);
+        wrapper.addEventListener('mouseenter', showTheaterToggle);
+        wrapper.addEventListener('mouseleave', hideTheaterToggle);
+
+        // Start with overlay active to detect first mouse entry
+        mouseOverlay.classList.add('ytot-active');
+
         container.style.position = 'relative';
         container.appendChild(wrapper);
 
