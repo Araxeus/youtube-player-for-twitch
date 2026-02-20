@@ -210,7 +210,7 @@
      */
     function toggleTheaterMode() {
         const theaterBtn = document.querySelector('div[data-a-target="player-controls"] button[aria-label*="Theatre Mode"]') ||
-                          document.querySelector('section#channel-player button[aria-label*="Theatre Mode"]')
+            document.querySelector('section#channel-player button[aria-label*="Theatre Mode"]')
 
         if (theaterBtn) {
             theaterBtn.click();
@@ -512,7 +512,14 @@
 
         const theaterToggle = document.createElement('button');
         theaterToggle.id = 'ytot-player-theater';
-        theaterToggle.innerHTML = '\uD83C\uDFAD';
+        theaterToggle.innerHTML = /*html*/`
+            <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" aria-hidden="true" role="presentation" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm14 0h4v14h-4V5Zm-2 0H4v14h10V5Z"
+                    clip-rule="evenodd">
+                </path>
+            </svg>
+            `;
         theaterToggle.title = 'Toggle Theater Mode (Alt+T)';
         theaterToggle.onclick = (e) => {
             e.stopPropagation();
@@ -527,22 +534,20 @@
 
         // Auto-hide theater toggle after x seconds of mouse inactivity (like YouTube controls)
         let hideTimeout = null;
-        const HIDE_DELAY = 3500;
-
-        const showTheaterToggle = () => {
-            theaterToggle.classList.add('ytot-visible');
-            mouseOverlay.classList.remove('ytot-active');
-            clearTimeout(hideTimeout);
-            hideTimeout = setTimeout(() => {
-                theaterToggle.classList.remove('ytot-visible');
-                mouseOverlay.classList.add('ytot-active');
-            }, HIDE_DELAY);
-        };
+        const HIDE_DELAY = 3700;
 
         const hideTheaterToggle = () => {
             clearTimeout(hideTimeout);
+            mouseOverlay.style.pointerEvents = 'auto'; // Re-enable mouse events to detect movement
+            if (theaterToggle.matches(':hover')) return; // Don't hide if hovering over the button
             theaterToggle.classList.remove('ytot-visible');
-            mouseOverlay.classList.add('ytot-active');
+        };
+
+        const showTheaterToggle = () => {
+            clearTimeout(hideTimeout);
+            theaterToggle.classList.add('ytot-visible');
+            mouseOverlay.style.pointerEvents = 'none'; // Disable mouse events to allow iframe interaction
+            hideTimeout = setTimeout(hideTheaterToggle, HIDE_DELAY);
         };
 
         // Overlay captures mouse movement when active, then hides itself to allow iframe interaction

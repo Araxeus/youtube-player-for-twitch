@@ -48,10 +48,9 @@
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     z-index: 9999;
-}
-
-.ytot-dropdown.visible {
-    display: block;
+    &.visible {
+        display: block;
+    }
 }
 
 /* Dropdown Header */
@@ -116,10 +115,9 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s;
-}
-
-.ytot-go:hover {
-    background: #772ce8;
+    &:hover {
+        background: #772ce8;
+    }
 }
 
 /* Options Section */
@@ -240,14 +238,16 @@
 
 #ytot-player-theater {
     position: absolute;
-    bottom: 50px; /* Above YouTube controls */
-    right: 10px;
+    /* bottom: 50px; /* Above YouTube controls */
+    /* right: 19px; */
+    bottom: 3px;
+    right: 205px;
     z-index: 10000;
-    background: rgba(0, 0, 0, 0.6);
+    /* background: rgba(0, 0, 0, 0.6); */
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 8px;
+    padding: 5px;
     cursor: pointer;
     font-size: 18px;
     opacity: 0;
@@ -258,12 +258,11 @@
 }
 
 #ytot-player-theater.ytot-visible {
-    opacity: 1;
-}
-
-#ytot-player-theater:hover {
-    background: rgba(145, 71, 255, 0.8); /* Twitch Purple */
-    transform: scale(1.1);
+    opacity: 0.9;
+    &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
 }
 
 /* Transparent overlay to capture mouse events over cross-origin iframe */
