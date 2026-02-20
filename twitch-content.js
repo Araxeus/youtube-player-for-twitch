@@ -147,7 +147,6 @@
                 
                 <!-- Actions -->
                 <div class="ytot-actions">
-                    <button class="ytot-theater-btn" id="ytot-theater" title="Toggle Theater Mode (Alt+T)">\uD83C\uDFAD Theater</button>
                     <button class="ytot-sync-now" id="ytot-sync-now">\u26A1 Sync Now</button>
                     <button class="ytot-restore" id="ytot-restore">Restore Twitch</button>
                 </div>
@@ -167,7 +166,6 @@
         uiCache.label = toggle?.querySelector('.ytot-label');
         uiCache.restore = document.getElementById('ytot-restore');
         uiCache.syncNow = document.getElementById('ytot-sync-now');
-        uiCache.theater = document.getElementById('ytot-theater');
     }
 
     /**
@@ -716,11 +714,6 @@
 
         restore.onclick = () => removeYouTube(false); // Explicit removal
         syncNowBtn.onclick = syncNow;
-
-        const theaterBtn = document.getElementById('ytot-theater');
-        if (theaterBtn) {
-            theaterBtn.onclick = () => toggleTheaterMode();
-        }
 
         autoSyncCheckbox.onchange = (e) => {
             state.autoSyncEnabled = e.target.checked;

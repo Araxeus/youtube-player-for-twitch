@@ -169,8 +169,7 @@
 }
 
 .ytot-sync-now,
-.ytot-restore,
-.ytot-theater-btn {
+.ytot-restore {
     display: none;
     flex: 1;
     padding: 8px 12px;
@@ -180,16 +179,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
-}
-
-.ytot-theater-btn {
-    background: #3a3a3d;
-    color: #efeff1;
-    display: block; /* Always show in dropdown when active */
-}
-
-.ytot-theater-btn:hover {
-    background: #4a4a4d;
 }
 
 .ytot-sync-now {
