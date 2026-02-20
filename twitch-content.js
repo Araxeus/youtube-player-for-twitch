@@ -1,13 +1,13 @@
 /**
  * YouTube on Twitch - Content Script
- * 
+ *
  * Features:
  * - Overlays YouTube player on Twitch stream
  * - Preserves Twitch chat
  * - Auto-finds YouTube stream based on Twitch channel name
  * - Syncs playback speed to catch up with live edge
  * - Persists state across page reloads and navigation
- * 
+ *
  * @author YouTube on Twitch Team
  */
 
@@ -51,8 +51,8 @@
 
     /**
      * Persist data to Chrome storage
-     * @param {string} key 
-     * @param {any} value 
+     * @param {string} key
+     * @param {any} value
      */
     function saveState(key, value) {
         if (!chrome.runtime?.id) return;
@@ -65,7 +65,7 @@
 
     /**
      * Retrieve data from Chrome storage
-     * @param {string} key 
+     * @param {string} key
      * @returns {Promise<any>}
      */
     function loadState(key) {
@@ -109,13 +109,13 @@
                 <span class="ytot-icon">\u25B6</span>
                 <span class="ytot-label">YouTube</span>
             </button>
-            
+
             <div class="ytot-dropdown" id="ytot-dropdown">
                 <div class="ytot-dropdown-header">
                     <span>Watch YouTube Stream</span>
                     <button class="ytot-close" id="ytot-close" aria-label="Close">×</button>
                 </div>
-                
+
                 <!-- Auto-Find Section -->
                 <div class="ytot-autofind" id="ytot-autofind-section">
                     <button class="ytot-autofind-btn" id="ytot-autofind">\uD83D\uDD0D Find YouTube Stream</button>
@@ -124,15 +124,15 @@
 
                 <!-- History Section -->
                 <div id="ytot-history-section" class="ytot-history-section"></div>
-                
+
                 <div class="ytot-divider">or paste URL</div>
-                
+
                 <!-- Manual Input -->
                 <div class="ytot-dropdown-body">
                     <input type="text" id="ytot-url" placeholder="Paste YouTube URL" spellcheck="false" />
                     <button class="ytot-go" id="ytot-go">Go</button>
                 </div>
-                
+
                 <!-- Options -->
                 <div class="ytot-options">
                     <label class="ytot-option">
@@ -144,13 +144,13 @@
                         <span>Force Highest Quality (Source)</span>
                     </label>
                 </div>
-                
+
                 <!-- Actions -->
                 <div class="ytot-actions">
                     <button class="ytot-sync-now" id="ytot-sync-now">\u26A1 Sync Now</button>
                     <button class="ytot-restore" id="ytot-restore">Restore Twitch</button>
                 </div>
-                
+
                 <div class="ytot-status" id="ytot-status"></div>
             </div>
         `;
@@ -170,7 +170,7 @@
 
     /**
      * Updates the toggle button appearance based on active state
-     * @param {boolean} isActive 
+     * @param {boolean} isActive
      */
     function updateToggleButton(isActive) {
         // Fallback if cache is empty (safety net)
@@ -304,7 +304,7 @@
 
     /**
      * Extracts YouTube Video ID from various URL formats
-     * @param {string} url 
+     * @param {string} url
      * @returns {string|null} Video ID
      */
     function extractVideoId(url) {
@@ -458,7 +458,7 @@
 
     /**
      * Injects YouTube iframe over the Twitch player
-     * @param {string} videoId 
+     * @param {string} videoId
      * @param {object} metadata Optional metadata { title, channel }
      */
     function injectYouTube(videoId, metadata = null) {
@@ -651,7 +651,7 @@
 
             // Simple mapping for safety
             // 'chunked' is the internal string Twitch uses for "Source" quality (maximum available).
-            // This ensures we always request the highest possible resolution and framerate 
+            // This ensures we always request the highest possible resolution and framerate
             // from the video server (e.g. 1080p60, 4K, etc).
             const target = 'chunked';
 
