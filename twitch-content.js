@@ -211,8 +211,8 @@
      * Toggles Twitch theater mode by finding and clicking the native button
      */
     function toggleTheaterMode() {
-        const theaterBtn = document.querySelector('[data-a-target="player-theater-mode-button"]') ||
-                          document.querySelector('button[aria-label*="Theater Mode"]');
+        const theaterBtn = document.querySelector('div[data-a-target="player-controls"] button[aria-label*="Theatre Mode"]') ||
+                          document.querySelector('section#channel-player button[aria-label*="Theatre Mode"]')
 
         if (theaterBtn) {
             theaterBtn.click();
@@ -744,36 +744,6 @@
         document.addEventListener('click', (e) => {
             const wrapper = document.getElementById('ytot-nav-wrapper');
             if (wrapper && !wrapper.contains(e.target)) closeDropdown();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeDropdown();
-
-            // Ignore shortcuts if typing in input/textarea/contenteditable
-            const target = e.target;
-            const isTyping = target.tagName === 'INPUT' ||
-                             target.tagName === 'TEXTAREA' ||
-                             target.isContentEditable;
-
-            if (isTyping) return;
-
-            // Alt+T: Toggle Theater Mode
-            if (e.altKey && (e.key === 't' || e.key === 'T')) {
-                e.preventDefault();
-                toggleTheaterMode();
-            }
-
-            // Alt+Y: Toggle Dropdown
-            if (e.altKey && (e.key === 'y' || e.key === 'Y')) {
-                e.preventDefault();
-                const dropdown = document.getElementById('ytot-dropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('visible');
-                    if (dropdown.classList.contains('visible')) {
-                        document.getElementById('ytot-url')?.focus();
-                    }
-                }
-            }
         });
     }
 
