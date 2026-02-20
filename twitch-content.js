@@ -1,13 +1,13 @@
 /**
  * YouTube on Twitch - Content Script
- * 
+ *
  * Features:
  * - Overlays YouTube player on Twitch stream
  * - Preserves Twitch chat
  * - Auto-finds YouTube stream based on Twitch channel name
  * - Syncs playback speed to catch up with live edge
  * - Persists state across page reloads and navigation
- * 
+ *
  * @author YouTube on Twitch Team
  */
 
@@ -51,8 +51,8 @@
 
     /**
      * Persist data to Chrome storage
-     * @param {string} key 
-     * @param {any} value 
+     * @param {string} key
+     * @param {any} value
      */
     function saveState(key, value) {
         if (!chrome.runtime?.id) return;
@@ -65,7 +65,7 @@
 
     /**
      * Retrieve data from Chrome storage
-     * @param {string} key 
+     * @param {string} key
      * @returns {Promise<any>}
      */
     function loadState(key) {
@@ -104,18 +104,18 @@
         const wrapper = document.createElement('div');
         wrapper.id = 'ytot-nav-wrapper';
 
-        wrapper.innerHTML = `
+        wrapper.innerHTML = /* html */`
             <button class="ytot-nav-btn" id="ytot-toggle" aria-label="Toggle YouTube Player">
                 <span class="ytot-icon">\u25B6</span>
                 <span class="ytot-label">YouTube</span>
             </button>
-            
+
             <div class="ytot-dropdown" id="ytot-dropdown">
                 <div class="ytot-dropdown-header">
                     <span>Watch YouTube Stream</span>
                     <button class="ytot-close" id="ytot-close" aria-label="Close">×</button>
                 </div>
-                
+
                 <!-- Auto-Find Section -->
                 <div class="ytot-autofind" id="ytot-autofind-section">
                     <button class="ytot-autofind-btn" id="ytot-autofind">\uD83D\uDD0D Find YouTube Stream</button>
@@ -124,15 +124,15 @@
 
                 <!-- History Section -->
                 <div id="ytot-history-section" class="ytot-history-section"></div>
-                
+
                 <div class="ytot-divider">or paste URL</div>
-                
+
                 <!-- Manual Input -->
                 <div class="ytot-dropdown-body">
                     <input type="text" id="ytot-url" placeholder="Paste YouTube URL" spellcheck="false" />
                     <button class="ytot-go" id="ytot-go">Go</button>
                 </div>
-                
+
                 <!-- Options -->
                 <div class="ytot-options">
                     <label class="ytot-option">
@@ -144,14 +144,13 @@
                         <span>Force Highest Quality (Source)</span>
                     </label>
                 </div>
-                
+
                 <!-- Actions -->
                 <div class="ytot-actions">
-                    <button class="ytot-theater-btn" id="ytot-theater" title="Toggle Theater Mode (Alt+T)">\uD83C\uDFAD Theater</button>
                     <button class="ytot-sync-now" id="ytot-sync-now">\u26A1 Sync Now</button>
                     <button class="ytot-restore" id="ytot-restore">Restore Twitch</button>
                 </div>
-                
+
                 <div class="ytot-status" id="ytot-status"></div>
             </div>
         `;
@@ -167,12 +166,11 @@
         uiCache.label = toggle?.querySelector('.ytot-label');
         uiCache.restore = document.getElementById('ytot-restore');
         uiCache.syncNow = document.getElementById('ytot-sync-now');
-        uiCache.theater = document.getElementById('ytot-theater');
     }
 
     /**
      * Updates the toggle button appearance based on active state
-     * @param {boolean} isActive 
+     * @param {boolean} isActive
      */
     function updateToggleButton(isActive) {
         // Fallback if cache is empty (safety net)
@@ -211,8 +209,8 @@
      * Toggles Twitch theater mode by finding and clicking the native button
      */
     function toggleTheaterMode() {
-        const theaterBtn = document.querySelector('[data-a-target="player-theater-mode-button"]') ||
-                          document.querySelector('button[aria-label*="Theater Mode"]');
+        const theaterBtn = document.querySelector('div[data-a-target="player-controls"] button[aria-label*="Theatre Mode"]') ||
+            document.querySelector('section#channel-player button[aria-label*="Theatre Mode"]')
 
         if (theaterBtn) {
             theaterBtn.click();
@@ -306,7 +304,7 @@
 
     /**
      * Extracts YouTube Video ID from various URL formats
-     * @param {string} url 
+     * @param {string} url
      * @returns {string|null} Video ID
      */
     function extractVideoId(url) {
@@ -460,7 +458,7 @@
 
     /**
      * Injects YouTube iframe over the Twitch player
-     * @param {string} videoId 
+     * @param {string} videoId
      * @param {object} metadata Optional metadata { title, channel }
      */
     function injectYouTube(videoId, metadata = null) {
@@ -508,19 +506,25 @@
         iframe.id = 'ytot-youtube-player';
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1`;
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.setAttribute('allow', 'fullscreen');
+        const sendToIframe = data => {
+          const msg = typeof data === 'string' ? { msg: data } : { ...data };
+          iframe.contentWindow.postMessage({ type: "YPFT_IFRAME", ...msg }, "https://www.youtube.com");
+        };
+
+        window.addEventListener("message", receiveMessage, false);
+
+        function receiveMessage(event) {
+            if (event.origin !== "https://www.youtube.com" || event.data?.type !== 'YPFT_IFRAME') return;
+
+            if (event.data.msg === 'loaded') {
+              sendToIframe("load theater button");
+            } else if (event.data.msg === 'toggle theater mode') {
+              toggleTheaterMode();
+            }
+        }
 
         wrapper.appendChild(iframe);
-
-        const theaterToggle = document.createElement('button');
-        theaterToggle.id = 'ytot-player-theater';
-        theaterToggle.innerHTML = '\uD83C\uDFAD';
-        theaterToggle.title = 'Toggle Theater Mode (Alt+T)';
-        theaterToggle.onclick = (e) => {
-            e.stopPropagation();
-            toggleTheaterMode();
-        };
-        wrapper.appendChild(theaterToggle);
 
         container.style.position = 'relative';
         container.appendChild(wrapper);
@@ -653,7 +657,7 @@
 
             // Simple mapping for safety
             // 'chunked' is the internal string Twitch uses for "Source" quality (maximum available).
-            // This ensures we always request the highest possible resolution and framerate 
+            // This ensures we always request the highest possible resolution and framerate
             // from the video server (e.g. 1080p60, 4K, etc).
             const target = 'chunked';
 
@@ -717,11 +721,6 @@
         restore.onclick = () => removeYouTube(false); // Explicit removal
         syncNowBtn.onclick = syncNow;
 
-        const theaterBtn = document.getElementById('ytot-theater');
-        if (theaterBtn) {
-            theaterBtn.onclick = () => toggleTheaterMode();
-        }
-
         autoSyncCheckbox.onchange = (e) => {
             state.autoSyncEnabled = e.target.checked;
             saveState('ytot_autosync', state.autoSyncEnabled);
@@ -744,36 +743,6 @@
         document.addEventListener('click', (e) => {
             const wrapper = document.getElementById('ytot-nav-wrapper');
             if (wrapper && !wrapper.contains(e.target)) closeDropdown();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeDropdown();
-
-            // Ignore shortcuts if typing in input/textarea/contenteditable
-            const target = e.target;
-            const isTyping = target.tagName === 'INPUT' ||
-                             target.tagName === 'TEXTAREA' ||
-                             target.isContentEditable;
-
-            if (isTyping) return;
-
-            // Alt+T: Toggle Theater Mode
-            if (e.altKey && (e.key === 't' || e.key === 'T')) {
-                e.preventDefault();
-                toggleTheaterMode();
-            }
-
-            // Alt+Y: Toggle Dropdown
-            if (e.altKey && (e.key === 'y' || e.key === 'Y')) {
-                e.preventDefault();
-                const dropdown = document.getElementById('ytot-dropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('visible');
-                    if (dropdown.classList.contains('visible')) {
-                        document.getElementById('ytot-url')?.focus();
-                    }
-                }
-            }
         });
     }
 
