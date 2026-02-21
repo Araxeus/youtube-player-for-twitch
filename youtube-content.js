@@ -3,7 +3,7 @@
 
     window.addEventListener('message', receiveMessage, false);
     try {
-        sendMessageToParent('loaded');
+        sendMessageToParent({ iframeLoaded: true });
     } catch (err) {
         console.error('Error sending message to parent:', err);
     }
@@ -22,13 +22,13 @@
             event.data?.type !== 'YPFT_IFRAME'
         )
             return;
-        if (event.data.msg === 'load theater button') {
+        if (event.data.loadTheaterButton) {
             insertTheaterButton();
         }
     }
 
     function toggleTheaterMode() {
-        sendMessageToParent('toggle theater mode');
+        sendMessageToParent({ toggleTheaterMode: true });
     }
 
     // allow the alt+t shortcut to work even when the focus is inside the youtube iframe

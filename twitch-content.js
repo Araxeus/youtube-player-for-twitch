@@ -517,10 +517,10 @@
         function receiveMessage(event) {
             if (event.origin !== "https://www.youtube.com" || event.data?.type !== 'YPFT_IFRAME') return;
 
-            if (event.data.msg === 'loaded') {
-              sendToIframe("load theater button");
-            } else if (event.data.msg === 'toggle theater mode') {
-              toggleTheaterMode();
+            if (event.data.iframeLoaded) {
+                sendToIframe({ loadTheaterButton: true });
+            } else if (event.data.toggleTheaterMode) {
+                toggleTheaterMode();
             }
         }
 
