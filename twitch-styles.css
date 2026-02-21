@@ -22,15 +22,15 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-}
 
-.ytot-nav-btn:hover {
-    background: rgba(83, 83, 95, 0.48);
-    color: #fff;
-}
+    &:hover {
+        background: rgba(83, 83, 95, 0.48);
+        color: #fff;
+    }
 
-.ytot-nav-btn.active {
-    color: #bf94ff;
+    &.active {
+        color: #bf94ff;
+    }
 }
 
 .ytot-icon {
@@ -48,6 +48,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     z-index: 9999;
+
     &.visible {
         display: block;
     }
@@ -73,10 +74,10 @@
     cursor: pointer;
     padding: 0;
     line-height: 1;
-}
 
-.ytot-close:hover {
-    color: #fff;
+    &:hover {
+        color: #fff;
+    }
 }
 
 /* Dropdown Body */
@@ -95,14 +96,14 @@
     color: #efeff1;
     font-size: 13px;
     outline: none;
-}
 
-#ytot-url:focus {
-    border-color: #9147ff;
-}
+    &:focus {
+        border-color: #9147ff;
+    }
 
-#ytot-url::placeholder {
-    color: #636369;
+    &::placeholder {
+        color: #636369;
+    }
 }
 
 .ytot-go {
@@ -115,6 +116,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s;
+
     &:hover {
         background: #772ce8;
     }
@@ -133,14 +135,14 @@
     color: #adadb8;
     font-size: 12px;
     cursor: pointer;
-}
 
-.ytot-option:hover {
-    color: #efeff1;
-}
+    &:hover {
+        color: #efeff1;
+    }
 
-.ytot-option input[type="checkbox"] {
-    accent-color: #9147ff;
+    & input[type="checkbox"] {
+        accent-color: #9147ff;
+    }
 }
 
 .ytot-select {
@@ -152,10 +154,10 @@
     padding: 4px 8px;
     outline: none;
     cursor: pointer;
-}
 
-.ytot-select:focus {
-    border-color: #9147ff;
+    &:focus {
+        border-color: #9147ff;
+    }
 }
 
 /* Actions Section */
@@ -182,20 +184,20 @@
 .ytot-sync-now {
     background: #1f69ff;
     color: white;
-}
 
-.ytot-sync-now:hover {
-    background: #0050e6;
+    &:hover {
+        background: #0050e6;
+    }
 }
 
 .ytot-restore {
     background: #3a3a3d;
     color: #adadb8;
-}
 
-.ytot-restore:hover {
-    background: #4a4a4d;
-    color: #efeff1;
+    &:hover {
+        background: #4a4a4d;
+        color: #efeff1;
+    }
 }
 
 /* Status */
@@ -204,22 +206,22 @@
     font-size: 11px;
     color: #adadb8;
     min-height: 14px;
-}
 
-.ytot-status:empty {
-    display: none;
-}
+    &:empty {
+        display: none;
+    }
 
-.ytot-status-success {
-    color: #00c853;
-}
+    &.ytot-status-success {
+        color: #00c853;
+    }
 
-.ytot-status-error {
-    color: #ff5252;
-}
+    &.ytot-status-error {
+        color: #ff5252;
+    }
 
-.ytot-status-syncing {
-    color: #1f69ff;
+    &.ytot-status-syncing {
+        color: #1f69ff;
+    }
 }
 
 /* YouTube Player Wrapper */
@@ -238,12 +240,9 @@
 
 #ytot-player-theater {
     position: absolute;
-    /* bottom: 50px; /* Above YouTube controls */
-    /* right: 19px; */
     bottom: 3px;
     right: 205px;
     z-index: 10000;
-    /* background: rgba(0, 0, 0, 0.6); */
     color: white;
     border: none;
     border-radius: 4px;
@@ -255,13 +254,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
 
-#ytot-player-theater.ytot-visible {
-    opacity: 0.9;
-    &:hover {
-        opacity: 1;
-        transform: scale(1.1);
+    &.ytot-visible {
+        opacity: 0.9;
+
+        &:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
     }
 }
 
@@ -275,10 +275,10 @@
     z-index: 9999;
     pointer-events: none;
     cursor: default;
-}
 
-#ytot-mouse-overlay.ytot-active {
-    pointer-events: auto;
+    &.ytot-active {
+        pointer-events: auto;
+    }
 }
 
 /* Auto-Find Section */
@@ -298,11 +298,11 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
-}
 
-.ytot-autofind-btn:hover {
-    background: linear-gradient(135deg, #ff3333 0%, #dd0000 100%);
-    transform: translateY(-1px);
+    &:hover {
+        background: linear-gradient(135deg, #ff3333 0%, #dd0000 100%);
+        transform: translateY(-1px);
+    }
 }
 
 .ytot-divider {
@@ -377,10 +377,10 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s;
-}
 
-.ytot-result-use:hover {
-    background: #00a843;
+    &:hover {
+        background: #00a843;
+    }
 }
 
 /* History Section */
@@ -411,11 +411,11 @@
     border-radius: 4px;
     transition: all 0.15s;
     text-transform: uppercase;
-}
 
-.ytot-clear-history:hover {
-    color: #ff5252;
-    background: rgba(255, 82, 82, 0.1);
+    &:hover {
+        color: #ff5252;
+        background: rgba(255, 82, 82, 0.1);
+    }
 }
 
 .ytot-history-list {
@@ -430,10 +430,10 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.1s;
-}
 
-.ytot-history-item:hover {
-    background: #2f2f35;
+    &:hover {
+        background: #2f2f35;
+    }
 }
 
 .ytot-history-title {
