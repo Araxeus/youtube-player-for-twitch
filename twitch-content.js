@@ -507,56 +507,24 @@
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1`;
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         iframe.setAttribute('allow', 'fullscreen');
+        const sendToIframe = data => {
+          const msg = typeof data === 'string' ? { msg: data } : { ...data };
+          iframe.contentWindow.postMessage({ type: "YPFT_IFRAME", ...msg }, "https://www.youtube.com");
+        };
+
+        window.addEventListener("message", receiveMessage, false);
+
+        function receiveMessage(event) {
+            if (event.origin !== "https://www.youtube.com" || event.data?.type !== 'YPFT_IFRAME') return;
+
+            if (event.data.msg === 'loaded') {
+              sendToIframe("load theater button");
+            } else if (event.data.msg === 'toggle theater mode') {
+              toggleTheaterMode();
+            }
+        }
 
         wrapper.appendChild(iframe);
-
-        const theaterToggle = document.createElement('button');
-        theaterToggle.id = 'ytot-player-theater';
-        theaterToggle.innerHTML = /*html*/`
-            <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" aria-hidden="true" role="presentation" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm14 0h4v14h-4V5Zm-2 0H4v14h10V5Z"
-                    clip-rule="evenodd">
-                </path>
-            </svg>
-            `;
-        theaterToggle.title = 'Toggle Theater Mode (Alt+T)';
-        theaterToggle.onclick = (e) => {
-            e.stopPropagation();
-            toggleTheaterMode();
-        };
-        wrapper.appendChild(theaterToggle);
-
-        // Transparent overlay to capture mouse events (since we can't listen inside cross-origin iframe)
-        const mouseOverlay = document.createElement('div');
-        mouseOverlay.id = 'ytot-mouse-overlay';
-        wrapper.appendChild(mouseOverlay);
-
-        // Auto-hide theater toggle after x seconds of mouse inactivity (like YouTube controls)
-        let hideTimeout = null;
-        const HIDE_DELAY = 3700;
-
-        const hideTheaterToggle = () => {
-            clearTimeout(hideTimeout);
-            mouseOverlay.style.pointerEvents = 'auto'; // Re-enable mouse events to detect movement
-            if (theaterToggle.matches(':hover')) return; // Don't hide if hovering over the button
-            theaterToggle.classList.remove('ytot-visible');
-        };
-
-        const showTheaterToggle = () => {
-            clearTimeout(hideTimeout);
-            theaterToggle.classList.add('ytot-visible');
-            mouseOverlay.style.pointerEvents = 'none'; // Disable mouse events to allow iframe interaction
-            hideTimeout = setTimeout(hideTheaterToggle, HIDE_DELAY);
-        };
-
-        // Overlay captures mouse movement when active, then hides itself to allow iframe interaction
-        mouseOverlay.addEventListener('mousemove', showTheaterToggle);
-        wrapper.addEventListener('mouseenter', showTheaterToggle);
-        wrapper.addEventListener('mouseleave', hideTheaterToggle);
-
-        // Start with overlay active to detect first mouse entry
-        mouseOverlay.classList.add('ytot-active');
 
         container.style.position = 'relative';
         container.appendChild(wrapper);
