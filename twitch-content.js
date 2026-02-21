@@ -554,9 +554,9 @@
             )
                 return;
 
-            if (event.data.msg === 'loaded') {
-                sendToIframe('load theater button');
-            } else if (event.data.msg === 'toggle theater mode') {
+            if (event.data.iframeLoaded) {
+                sendToIframe({ loadTheaterButton: true });
+            } else if (event.data.toggleTheaterMode) {
                 toggleTheaterMode();
             }
         }
