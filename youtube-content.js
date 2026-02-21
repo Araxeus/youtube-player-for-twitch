@@ -21,6 +21,17 @@
     }
   }
 
+  function toggleTheaterMode() {
+    sendMessageToParent('toggle theater mode');
+  }
+
+  // allow the alt+t shortcut to work even when the focus is inside the youtube iframe
+  window.addEventListener('keydown', (e) => {
+    if (e.altKey && e.key.toLowerCase() === 't') {
+      toggleTheaterMode();
+    }
+  });
+
   function insertTheaterButton() {
     const fullscreenButton = document.querySelector('div.ytp-right-controls>button.ytp-fullscreen-button');
     if (!fullscreenButton) {
@@ -40,8 +51,6 @@
           </svg>
           `;
       fullscreenButton.parentNode.insertBefore(theaterButton, fullscreenButton);
-      theaterButton.addEventListener('click', () => {
-        sendMessageToParent('toggle theater mode');
-      });
+      theaterButton.addEventListener('click', toggleTheaterMode);
   }
 })();
