@@ -4,7 +4,7 @@
  */
 
 // Listen for messages from content scripts
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (request.type === 'SEARCH_YOUTUBE') {
         handleSearch(request.query)
             .then(sendResponse)
@@ -39,7 +39,7 @@ async function handleVideoDetails(videoId) {
                 return {
                     title: details.title,
                     channel: details.author,
-                    videoId: videoId
+                    videoId: videoId,
                 };
             }
         }
@@ -50,7 +50,7 @@ async function handleVideoDetails(videoId) {
             return {
                 title: titleMatch[1],
                 channel: 'YouTube Stream', // Best guess fallback
-                videoId: videoId
+                videoId: videoId,
             };
         }
 
@@ -77,8 +77,10 @@ async function handleSearch(query) {
         if (!match) return { error: 'Could not parse YouTube results' };
 
         const data = JSON.parse(match[1]);
-        const contents = data?.contents?.twoColumnSearchResultsRenderer?.primaryContents
-            ?.sectionListRenderer?.contents?.[0]?.itemSectionRenderer?.contents;
+        const contents =
+            data?.contents?.twoColumnSearchResultsRenderer?.primaryContents
+                ?.sectionListRenderer?.contents?.[0]?.itemSectionRenderer
+                ?.contents;
 
         if (!contents) return { error: 'No results found' };
 
@@ -89,7 +91,7 @@ async function handleSearch(query) {
             if (!v) continue;
 
             const isLive = v.badges?.some(b =>
-                b.metadataBadgeRenderer?.label?.toLowerCase().includes('live')
+                b.metadataBadgeRenderer?.label?.toLowerCase().includes('live'),
             );
 
             if (isLive) {
@@ -97,13 +99,12 @@ async function handleSearch(query) {
                     videoId: v.videoId,
                     title: v.title?.runs?.[0]?.text || '',
                     channel: v.ownerText?.runs?.[0]?.text || '',
-                    isLive: true
+                    isLive: true,
                 });
             }
         }
 
         return { results };
-
     } catch (err) {
         console.error('Search error:', err);
         return { error: err.message };

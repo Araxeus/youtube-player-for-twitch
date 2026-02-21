@@ -11,9 +11,7 @@
  * @author YouTube on Twitch Team
  */
 
-(function () {
-    'use strict';
-
+(() => {
     // Prevent double execution
     if (window.__ytOnTwitchLoaded) return;
     window.__ytOnTwitchLoaded = true;
@@ -23,16 +21,16 @@
     // =====================
     const CONFIG = {
         SYNC_INTERVAL: 10 * 60 * 1000, // 10 minutes
-        SYNC_SPEED: 2.0,               // Speed to catch up
-        NORMAL_SPEED: 1.0,             // Normal playback speed
-        CHECK_INTERVAL: 1500,          // Poll interval for nav bar
-        MAX_ATTEMPTS: 15,              // Max checks for nav bar before giving up
-        QUALITY_CHECK_INTERVAL: 5 * 60 * 1000 // 5 minutes
+        SYNC_SPEED: 2.0, // Speed to catch up
+        NORMAL_SPEED: 1.0, // Normal playback speed
+        CHECK_INTERVAL: 1500, // Poll interval for nav bar
+        MAX_ATTEMPTS: 15, // Max checks for nav bar before giving up
+        QUALITY_CHECK_INTERVAL: 5 * 60 * 1000, // 5 minutes
     };
 
     const VIDEO_ID_PATTERNS = [
         /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
-        /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
     ];
 
     // =====================
@@ -46,7 +44,7 @@
         syncIntervalId: null,
         isSyncing: false,
         forceHighestQuality: false,
-        qualityIntervalId: null
+        qualityIntervalId: null,
     };
 
     /**
@@ -58,7 +56,7 @@
         if (!chrome.runtime?.id) return;
         try {
             chrome.storage?.local?.set({ [key]: value });
-        } catch (e) {
+        } catch {
             // Silent fail
         }
     }
@@ -69,14 +67,16 @@
      * @returns {Promise<any>}
      */
     function loadState(key) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (!chrome.runtime?.id) {
                 resolve(null);
                 return;
             }
             try {
-                chrome.storage?.local?.get([key], (result) => resolve(result?.[key]));
-            } catch (e) {
+                chrome.storage?.local?.get([key], result =>
+                    resolve(result?.[key]),
+                );
+            } catch {
                 resolve(null);
             }
         });
@@ -104,7 +104,7 @@
         const wrapper = document.createElement('div');
         wrapper.id = 'ytot-nav-wrapper';
 
-        wrapper.innerHTML = /* html */`
+        wrapper.innerHTML = /* html */ `
             <button class="ytot-nav-btn" id="ytot-toggle" aria-label="Toggle YouTube Player">
                 <span class="ytot-icon">\u25B6</span>
                 <span class="ytot-label">YouTube</span>
@@ -197,7 +197,7 @@
         const status = document.getElementById('ytot-status');
         if (status) {
             status.textContent = message;
-            status.className = 'ytot-status' + (type ? ` ytot-status-${type}` : '');
+            status.className = `ytot-status${type ? ` ytot-status-${type}` : ''}`;
         }
     }
 
@@ -209,8 +209,13 @@
      * Toggles Twitch theater mode by finding and clicking the native button
      */
     function toggleTheaterMode() {
-        const theaterBtn = document.querySelector('div[data-a-target="player-controls"] button[aria-label*="Theatre Mode"]') ||
-            document.querySelector('section#channel-player button[aria-label*="Theatre Mode"]')
+        const theaterBtn =
+            document.querySelector(
+                'div[data-a-target="player-controls"] button[aria-label*="Theatre Mode"]',
+            ) ||
+            document.querySelector(
+                'section#channel-player button[aria-label*="Theatre Mode"]',
+            );
 
         if (theaterBtn) {
             theaterBtn.click();
@@ -218,11 +223,13 @@
         } else {
             console.warn('[YTOT] Theater mode button not found');
             // Fallback: try to dispatch Alt+T to the document
-            document.dispatchEvent(new KeyboardEvent('keydown', {
-                key: 't',
-                altKey: true,
-                bubbles: true
-            }));
+            document.dispatchEvent(
+                new KeyboardEvent('keydown', {
+                    key: 't',
+                    altKey: true,
+                    bubbles: true,
+                }),
+            );
         }
     }
 
@@ -234,7 +241,7 @@
             videoId,
             title: metadata?.title || videoId,
             channel: metadata?.channel || 'Unknown Channel',
-            timestamp: Date.now()
+            timestamp: Date.now(),
         };
 
         // Remove duplicates (by videoId)
@@ -269,19 +276,23 @@
                 <button class="ytot-clear-history" id="ytot-clear-history" title="Clear History">Clear</button>
             </div>
             <div class="ytot-history-list">
-                ${history.map(item => `
+                ${history
+                    .map(
+                        item => `
                     <div class="ytot-history-item" data-video-id="${item.videoId}">
                         <div class="ytot-history-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
                         <div class="ytot-history-channel">${escapeHtml(item.channel)}</div>
                     </div>
-                `).join('')}
+                `,
+                    )
+                    .join('')}
             </div>
         `;
 
         // Clear button listener
         const clearBtn = container.querySelector('#ytot-clear-history');
         if (clearBtn) {
-            clearBtn.onclick = (e) => {
+            clearBtn.onclick = e => {
                 e.stopPropagation();
                 saveState('ytot_history', []);
                 renderHistory();
@@ -343,7 +354,7 @@
                 row[j] = Math.min(
                     prevDiagonal + cost,
                     temp + 1,
-                    row[j - 1] + 1
+                    row[j - 1] + 1,
                 );
 
                 prevDiagonal = temp;
@@ -360,12 +371,13 @@
         if (!channelName) return null;
 
         const resultDiv = document.getElementById('ytot-search-result');
-        resultDiv.innerHTML = '<div class="ytot-searching">\uD83D\uDD0D Searching...</div>';
+        resultDiv.innerHTML =
+            '<div class="ytot-searching">\uD83D\uDD0D Searching...</div>';
 
         try {
             const response = await chrome.runtime.sendMessage({
                 type: 'SEARCH_YOUTUBE',
-                query: `${channelName} live`
+                query: `${channelName} live`,
             });
 
             if (!response || response.error) {
@@ -374,24 +386,30 @@
             }
 
             const contents = response.results;
-            if (!contents || contents.length === 0) throw new Error('No results found');
+            if (!contents || contents.length === 0)
+                throw new Error('No results found');
 
             // Find best match
-            const normalizedChannel = channelName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const normalizedChannel = channelName
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '');
 
             // 1. Exact/Close Match
             for (const video of contents) {
-                const normalizedResult = video.channel.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const isSimilar = normalizedResult.includes(normalizedChannel) ||
+                const normalizedResult = video.channel
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '');
+                const isSimilar =
+                    normalizedResult.includes(normalizedChannel) ||
                     normalizedChannel.includes(normalizedResult) ||
-                    levenshteinDistance(normalizedChannel, normalizedResult) <= 3;
+                    levenshteinDistance(normalizedChannel, normalizedResult) <=
+                        3;
 
                 if (isSimilar) return { ...video, channel: video.channel };
             }
 
             // 2. Fallback: First live result
             return { ...contents[0], approximate: true };
-
         } catch (e) {
             console.error('[YTOT] Search error:', e);
             return null;
@@ -409,7 +427,9 @@
         const resultDiv = document.getElementById('ytot-search-result');
 
         if (result) {
-            const approxNote = result.approximate ? '<div class="ytot-result-note">\u26A0\uFE0F Best match (channel name differs)</div>' : '';
+            const approxNote = result.approximate
+                ? '<div class="ytot-result-note">\u26A0\uFE0F Best match (channel name differs)</div>'
+                : '';
             resultDiv.innerHTML = `
                 <div class="ytot-result-card">
                     ${approxNote}
@@ -418,9 +438,11 @@
                     <button class="ytot-result-use" data-video-id="${result.videoId}">\u25B6 Use This Stream</button>
                 </div>
             `;
-            resultDiv.querySelector('.ytot-result-use').onclick = () => injectYouTube(result.videoId, result);
+            resultDiv.querySelector('.ytot-result-use').onclick = () =>
+                injectYouTube(result.videoId, result);
         } else {
-            resultDiv.innerHTML = '<div class="ytot-no-result">No live stream found for this channel</div>';
+            resultDiv.innerHTML =
+                '<div class="ytot-no-result">No live stream found for this channel</div>';
         }
     }
 
@@ -452,7 +474,7 @@
     function resumeTwitch() {
         if (state.twitchVideo) {
             state.twitchVideo.muted = false;
-            state.twitchVideo.play().catch(() => { });
+            state.twitchVideo.play().catch(() => {});
         }
     }
 
@@ -470,21 +492,28 @@
         } else {
             // Fetch metadata asynchronously
             if (chrome.runtime?.id) {
-                chrome.runtime.sendMessage({
-                    type: 'GET_VIDEO_DETAILS',
-                    videoId
-                }, (response) => {
-                    if (response && !response.error) {
-                        addToHistory(videoId, response);
-                    } else {
-                        addToHistory(videoId, { title: videoId, channel: 'Manual Entry' });
-                    }
-                });
+                chrome.runtime.sendMessage(
+                    {
+                        type: 'GET_VIDEO_DETAILS',
+                        videoId,
+                    },
+                    response => {
+                        if (response && !response.error) {
+                            addToHistory(videoId, response);
+                        } else {
+                            addToHistory(videoId, {
+                                title: videoId,
+                                channel: 'Manual Entry',
+                            });
+                        }
+                    },
+                );
             }
         }
 
         // Try multiple selectors to support Twitch layout changes
-        const container = document.querySelector('[data-a-target="video-player-layout"]') ||
+        const container =
+            document.querySelector('[data-a-target="video-player-layout"]') ||
             document.querySelector('.video-player__container') ||
             document.querySelector('.video-player');
 
@@ -505,22 +534,30 @@
         const iframe = document.createElement('iframe');
         iframe.id = 'ytot-youtube-player';
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1`;
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+        iframe.allow =
+            'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         iframe.setAttribute('allow', 'fullscreen');
         const sendToIframe = data => {
-          const msg = typeof data === 'string' ? { msg: data } : { ...data };
-          iframe.contentWindow.postMessage({ type: "YPFT_IFRAME", ...msg }, "https://www.youtube.com");
+            const msg = typeof data === 'string' ? { msg: data } : { ...data };
+            iframe.contentWindow.postMessage(
+                { type: 'YPFT_IFRAME', ...msg },
+                'https://www.youtube.com',
+            );
         };
 
-        window.addEventListener("message", receiveMessage, false);
+        window.addEventListener('message', receiveMessage, false);
 
         function receiveMessage(event) {
-            if (event.origin !== "https://www.youtube.com" || event.data?.type !== 'YPFT_IFRAME') return;
+            if (
+                event.origin !== 'https://www.youtube.com' ||
+                event.data?.type !== 'YPFT_IFRAME'
+            )
+                return;
 
             if (event.data.msg === 'loaded') {
-              sendToIframe("load theater button");
+                sendToIframe('load theater button');
             } else if (event.data.msg === 'toggle theater mode') {
-              toggleTheaterMode();
+                toggleTheaterMode();
             }
         }
 
@@ -584,7 +621,10 @@
         try {
             // Post commands to YouTube Embed API
             const sendCmd = (func, args) => {
-                iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
+                iframe.contentWindow.postMessage(
+                    JSON.stringify({ event: 'command', func, args }),
+                    '*',
+                );
             };
 
             // 1. Jump to live
@@ -607,8 +647,7 @@
                     }, 3000);
                 }, 5000);
             }, 500);
-
-        } catch (e) {
+        } catch {
             state.isSyncing = false;
             updateStatus('Sync failed', 'error');
         }
@@ -643,7 +682,9 @@
             // Twitch stores quality in localStorage under 'video-quality'
             // Format: {"default":"160p30"} or {"default":"chunked"} (Source)
             const qualityKey = 'video-quality';
-            const currentSettings = JSON.parse(window.localStorage.getItem(qualityKey) || '{}');
+            const currentSettings = JSON.parse(
+                window.localStorage.getItem(qualityKey) || '{}',
+            );
 
             // Map simple values to likely Twitch keys if needed, but for now we try direct mapping
             // Note: Twitch often appends '30' or '60' to resolution (e.g., '160p30').
@@ -661,11 +702,12 @@
             // from the video server (e.g. 1080p60, 4K, etc).
             const target = 'chunked';
 
-
-
             if (currentSettings.default !== target) {
                 const newSettings = { ...currentSettings, default: target };
-                window.localStorage.setItem(qualityKey, JSON.stringify(newSettings));
+                window.localStorage.setItem(
+                    qualityKey,
+                    JSON.stringify(newSettings),
+                );
                 console.log('[YTOT] Enforced quality:', target);
             }
         } catch (e) {
@@ -677,7 +719,10 @@
         if (state.qualityIntervalId) return;
         // Run immediately
         enforceQuality();
-        state.qualityIntervalId = setInterval(enforceQuality, CONFIG.QUALITY_CHECK_INTERVAL);
+        state.qualityIntervalId = setInterval(
+            enforceQuality,
+            CONFIG.QUALITY_CHECK_INTERVAL,
+        );
         console.log('[YTOT] Quality enforcement started');
     }
 
@@ -714,21 +759,23 @@
         };
 
         goBtn.onclick = handleGo;
-        urlInput.onkeydown = (e) => {
+        urlInput.onkeydown = e => {
             if (e.key === 'Enter') handleGo();
         };
 
         restore.onclick = () => removeYouTube(false); // Explicit removal
         syncNowBtn.onclick = syncNow;
 
-        autoSyncCheckbox.onchange = (e) => {
+        autoSyncCheckbox.onchange = e => {
             state.autoSyncEnabled = e.target.checked;
             saveState('ytot_autosync', state.autoSyncEnabled);
-            state.autoSyncEnabled && state.youtubeVideoId ? startAutoSync() : stopAutoSync();
+            state.autoSyncEnabled && state.youtubeVideoId
+                ? startAutoSync()
+                : stopAutoSync();
         };
 
         const qualityCheckbox = document.getElementById('ytot-quality');
-        qualityCheckbox.onchange = (e) => {
+        qualityCheckbox.onchange = e => {
             state.forceHighestQuality = e.target.checked;
             saveState('ytot_force_highest', state.forceHighestQuality);
             if (state.forceHighestQuality) {
@@ -740,7 +787,7 @@
         };
 
         // Close on click outside
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             const wrapper = document.getElementById('ytot-nav-wrapper');
             if (wrapper && !wrapper.contains(e.target)) closeDropdown();
         });
@@ -752,8 +799,11 @@
         if (state.initialized) return;
 
         // Try to insert into Twitch Top Nav
-        const leftNav = document.querySelector('.top-nav__menu > div:first-child') ||
-            document.querySelector('button[aria-label="More Options"]')?.closest('div[class]')?.parentElement;
+        const leftNav =
+            document.querySelector('.top-nav__menu > div:first-child') ||
+            document
+                .querySelector('button[aria-label="More Options"]')
+                ?.closest('div[class]')?.parentElement;
 
         if (!leftNav) return;
 
@@ -794,7 +844,7 @@
                     const urlInput = document.getElementById('ytot-url');
                     if (urlInput) {
                         urlInput.value = `https://youtube.com/watch?v=${savedVideoId}`;
-                        urlInput.placeholder = 'Last: ' + savedVideoId;
+                        urlInput.placeholder = `Last: ${savedVideoId}`;
                     }
                 }
             }
@@ -849,5 +899,4 @@
     setInterval(handleNavigation, 2000);
 
     setTimeout(check, 1000);
-
 })();
