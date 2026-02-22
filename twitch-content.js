@@ -539,7 +539,7 @@
         iframe.setAttribute('allow', 'fullscreen');
         const sendToIframe = data => {
             const msg = typeof data === 'string' ? { msg: data } : { ...data };
-            iframe.contentWindow.postMessage(
+            iframe.contentWindow?.postMessage(
                 { type: 'YPFT_IFRAME', ...msg },
                 'https://www.youtube.com',
             );
