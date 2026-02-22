@@ -63,7 +63,7 @@ async function handleVideoDetails(videoId) {
 
 async function handleSearch(query) {
     try {
-        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgJAAQ%3D%3D`;
+        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgJAAQ%253D%253D`; //EgJAAQ%3D%3D`;
         const response = await fetch(searchUrl);
         const html = await response.text();
 
