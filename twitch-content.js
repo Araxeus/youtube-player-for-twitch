@@ -549,6 +549,7 @@
 
         function receiveMessage(event) {
             if (
+                event.source !== iframe.contentWindow ||
                 event.origin !== 'https://www.youtube.com' ||
                 event.data?.type !== 'YPFT_IFRAME'
             )
