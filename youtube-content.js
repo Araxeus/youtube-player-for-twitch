@@ -18,6 +18,7 @@
 
     function receiveMessage(event) {
         if (
+            event.source !== window.parent ||
             event.origin !== 'https://www.twitch.tv' ||
             event.data?.type !== 'YPFT_IFRAME'
         )

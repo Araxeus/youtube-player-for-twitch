@@ -518,7 +518,12 @@
         window.addEventListener("message", receiveMessage, false);
 
         function receiveMessage(event) {
-            if (event.origin !== "https://www.youtube.com" || event.data?.type !== 'YPFT_IFRAME') return;
+            if (
+                event.source !== iframe.contentWindow ||
+                event.origin !== 'https://www.youtube.com' ||
+                event.data?.type !== 'YPFT_IFRAME'
+            )
+                return;
 
             if (event.data.iframeLoaded) {
                 sendToIframe({ loadTheaterButton: true });
