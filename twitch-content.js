@@ -508,8 +508,11 @@
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         iframe.setAttribute('allow', 'fullscreen');
         const sendToIframe = data => {
-          const msg = typeof data === 'string' ? { msg: data } : { ...data };
-          iframe.contentWindow.postMessage({ type: "YPFT_IFRAME", ...msg }, "https://www.youtube.com");
+            const msg = typeof data === 'string' ? { msg: data } : { ...data };
+            iframe.contentWindow?.postMessage(
+                { type: 'YPFT_IFRAME', ...msg },
+                'https://www.youtube.com',
+            );
         };
 
         window.addEventListener("message", receiveMessage, false);
