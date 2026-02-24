@@ -506,7 +506,6 @@
         iframe.id = 'ytot-youtube-player';
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1`;
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-        iframe.setAttribute('allow', 'fullscreen');
         const sendToIframe = data => {
             const msg = typeof data === 'string' ? { msg: data } : { ...data };
             iframe.contentWindow?.postMessage(
