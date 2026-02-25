@@ -363,6 +363,19 @@
         return row[a.length];
     }
 
+    async function isVideoLive(videoId) {
+        try {
+            const response = await chrome.runtime.sendMessage({
+                type: 'CHECK_LIVE',
+                videoId,
+            });
+            return response?.isLive || false;
+        } catch (err) {
+            console.error('Live check error:', err);
+            return false; // Assume not live on error
+        }
+    }
+
     /**
      * Searches YouTube for a livestream matching the Twitch channel name
      * Uses background script to bypass CORS
@@ -533,7 +546,7 @@
 
         const iframe = document.createElement('iframe');
         iframe.id = 'ytot-youtube-player';
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&hd=1`;
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&hd=1&origin=https://www.twitch.tv`;
         iframe.allow =
             'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         const sendToIframe = data => {
@@ -837,7 +850,12 @@
             const activeStream = await loadState(`ytot_active_${channel}`);
             if (activeStream) {
                 console.log('[YTOT] Restoring active stream:', activeStream);
-                injectYouTube(activeStream);
+                if (await isVideoLive(activeStream)) {
+                    injectYouTube(activeStream);
+                } else {
+                    console.log('[YTOT] Active stream is no longer live');
+                    saveState(`ytot_active_${channel}`, null);
+                }
             } else {
                 const savedVideoId = await loadState(`ytot_${channel}`);
                 if (savedVideoId) {
