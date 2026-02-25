@@ -19,3 +19,11 @@ button.ypft-theater-button {
         transform: scale(1.1);
     }
 }
+
+button.ytp-live-badge:disabled {
+    pointer-events: none;
+}
+
+div.ytp-time-display.ytp-live {
+    cursor: pointer;
+}
