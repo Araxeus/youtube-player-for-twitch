@@ -1,5 +1,6 @@
 (() => {
     if (!document.referrer.startsWith('https://www.twitch.tv')) return;
+    const browserApi = globalThis.browser ?? globalThis.chrome ?? undefined;
 
     window.addEventListener('message', receiveMessage, false);
     try {
@@ -7,6 +8,8 @@
     } catch (err) {
         console.error('Error sending message to parent:', err);
     }
+
+    injectScript();
 
     function sendMessageToParent(data) {
         const msg = typeof data === 'string' ? { msg: data } : data;
@@ -66,5 +69,14 @@
             fullscreenButton,
         );
         theaterButton.addEventListener('click', toggleTheaterMode);
+    }
+
+    function injectScript() {
+        const script = document.createElement('script');
+        script.src = browserApi.runtime.getURL('youtube-inject.js');
+        (document.head || document.documentElement).appendChild(script);
+        script.onload = function () {
+            this.remove();
+        };
     }
 })();

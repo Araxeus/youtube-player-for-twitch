@@ -141,7 +141,7 @@
                     </label>
                     <label class="ytot-option">
                         <input type="checkbox" id="ytot-quality" />
-                        <span>Force Highest Quality (Source)</span>
+                        <span>Force Highest Quality</span>
                     </label>
                 </div>
 
@@ -546,7 +546,8 @@
 
         const iframe = document.createElement('iframe');
         iframe.id = 'ytot-youtube-player';
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&hd=1&origin=https://www.twitch.tv`;
+        const hq = state.forceHighestQuality ? 1 : 0;
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&hd=1&origin=https://www.twitch.tv&forcequality=${hq}`;
         iframe.allow =
             'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         const sendToIframe = data => {
