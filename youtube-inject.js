@@ -1,9 +1,15 @@
 (() => {
     const $ = document.querySelector.bind(document);
-    setTimeout(init, 50);
+    init();
 
     function init() {
         const api = $('#movie_player');
+
+        if (!api?.getAvailableQualityLevels()?.[0]) {
+            console.warn('YouTube player API not found, trying again');
+            setTimeout(init, 50);
+            return;
+        }
 
         const shouldForceQuality = new URLSearchParams(
             window.location.search,
