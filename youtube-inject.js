@@ -6,7 +6,7 @@
         const api = $('#movie_player');
 
         if (!api?.getAvailableQualityLevels()?.[0]) {
-            console.warn('YouTube player API not found, trying again');
+            console.log('YouTube player API not found, trying again');
             setTimeout(init, 50);
             return;
         }
