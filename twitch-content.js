@@ -92,6 +92,17 @@
         return match ? match[1].toLowerCase() : null;
     }
 
+    /**
+     * Check if the current page is a channel's live stream page
+     * (i.e. not a clip, video, schedule, or other sub-page)
+     * @returns {boolean}
+     */
+    function isChannelLivePage() {
+        const path = window.location.pathname;
+        // A live channel page is just /<channel> with no further path segments
+        return /^\/[a-zA-Z0-9_]+\/?$/.test(path);
+    }
+
     // =====================
     // UI Components
     // =====================
@@ -847,7 +858,7 @@
 
         // Restore Active Stream or Last Used
         const channel = getTwitchChannel();
-        if (channel) {
+        if (channel && isChannelLivePage()) {
             const activeStream = await loadState(`ytot_active_${channel}`);
             if (activeStream) {
                 console.log('[YTOT] Restoring active stream:', activeStream);
@@ -867,6 +878,11 @@
                     }
                 }
             }
+        } else if (channel) {
+            console.log(
+                '[YTOT] Skipping auto-restore on non-live page:',
+                window.location.pathname,
+            );
         }
 
         state.initialized = true;
