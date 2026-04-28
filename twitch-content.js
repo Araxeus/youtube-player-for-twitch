@@ -569,6 +569,13 @@
             );
         };
 
+        iframe.addEventListener('mouseleave', () => {
+            sendToIframe({ mouseLeave: true });
+        });
+        iframe.addEventListener('mouseenter', () => {
+            sendToIframe({ mouseEnter: true });
+        });
+
         window.addEventListener('message', receiveMessage, false);
 
         function receiveMessage(event) {
